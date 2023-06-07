@@ -1,0 +1,25 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "cardMarginH": "0.5",
+            "cardMarginPer": "0.5",
+            "cylinderRad": "1.6000000000000001",
+            "diam": "15",
+            "holderL": "18",
+            "myText": "NIWC LANT",
+            "numSpheres": "8",
+            "wall": "2"
+        },
+        "design default values": {
+            "cardMarginH": "0.5",
+            "cardMarginPer": "0.5",
+            "cylinderRad": "1.6",
+            "diam": "15",
+            "holderL": "15",
+            "myText": "NIWC LANT",
+            "numSpheres": "8",
+            "wall": "2"
+        }
+    }
+}
