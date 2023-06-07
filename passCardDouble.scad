@@ -4,13 +4,13 @@ cardMarginPer = 0.50;
 cardMarginH = 0.10;
 cardWidth = 87 + cardMarginPer;
 cardLength = 55.5 + cardMarginPer;
-cardHight  = 3*0.76 + cardMarginH;
+cardHeight  = 3*0.76 + cardMarginH;
 
 wallThickness = 1.60;
 
 cardHolderW = wallThickness + cardWidth;
 cardHolderL = wallThickness + cardLength;
-cardHolderH = wallThickness + cardHight;
+cardHolderH = wallThickness + cardHeight;
 
 myText = "YOUR COMPANY";
 fontName = "Lato:style=Regular";
