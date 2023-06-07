@@ -1,12 +1,15 @@
+// https://github.com/Irev-Dev/Round-Anything
+use <Round-Anything/polyround.scad>
+
 $fn = 64;
 
-cardMarginPer = 0.50;
-cardMarginH = 0.10;
+cardMarginPer = 0.49;
+cardMarginH = 0.09;
 cardWidth = 87 + cardMarginPer;
 cardLength = 55.5 + cardMarginPer;
 cardHeight  = 3*0.76 + cardMarginH;
 
-wallThickness = 1.60;
+wallThickness = 1.89;
 
 cardHolderW = wallThickness + cardWidth;
 cardHolderL = wallThickness + cardLength;
@@ -14,15 +17,27 @@ cardHolderH = wallThickness + cardHeight;
 
 myText = "YOUR COMPANY";
 fontName = "Lato:style=Regular";
-textSize = 4.25;
+textSize = 4.05;
 textDepth = 0.50;
 textPosition = 1.50;
 
 holderL = 18;
 
+module rcard( w, l, h, fillet )
+{
+    extrudeWithRadius(h,fillet,fillet,30)
+    square([w, l]);
+}
+
 module card ( w, l, h )
 {
-	cube ( [w, l, h] );
+    cube ( [w, l, h] );
+}
+
+module rcylinder(r, h, fillet, center)
+{
+    extrudeWithRadius(h,fillet,fillet,30)
+    circle(r);
 }
 
 module d1CardStrap ()
@@ -31,7 +46,7 @@ module d1CardStrap ()
 	{
 		translate ( [cardHolderW, 0, cardHolderH] )
 		{
-			card ( holderL, cardHolderL, wallThickness );
+			rcard ( holderL, cardHolderL, wallThickness, 0.5 );
 			translate ( [textPosition,cardHolderL/2,wallThickness] )
 				rotate ([0,0,-90])
                     linear_extrude(textDepth) 
@@ -42,18 +57,18 @@ module d1CardStrap ()
                     text(myText, size=textSize, font=fontName, halign="center");
 		}
 		//	cutting angles of strap
-		translate ( [cardHolderW+holderL, 0, cardHolderH] )
+		translate ( [cardHolderW+holderL, -(holderL/2), cardHolderH] )
 		{
 			rotate ([0,0,180])
 			{
-				cylinder ( r=holderL+wallThickness, h=10, $fn=3, center=true );
+				cylinder ( r=holderL+wallThickness, h=10, center=true );
 			}
 		}
-		translate ( [cardHolderW+holderL, cardHolderL, cardHolderH] )
+		translate ( [cardHolderW+holderL, cardHolderL+(holderL/2), cardHolderH] )
 		{
 			rotate ([0,0,180])
 			{
-				cylinder ( r=holderL+wallThickness, h=10, $fn=3, center=true );
+				cylinder ( r=holderL+wallThickness, h=10, center=true );
 			}
 		}
 	
@@ -62,11 +77,11 @@ module d1CardStrap ()
 		{
 			card (5, 10, 10);
 			translate ([2.5,0,-1])
-				cylinder ( r=2.5, h=10, $fn=10 );
+				cylinder ( r=2.5, h=10 );
 			translate ([2.5,10,-1])
-				cylinder ( r=2.5, h=10, $fn=10 );
+				cylinder ( r=2.5, h=10 );
 			translate ([2.5,5,-5])
-				cylinder ( r=3.5, h=10, $fn=20 );
+				cylinder ( r=3.5, h=10 );
 
 		}
 	}	
@@ -78,24 +93,24 @@ module topStops ()
 	{
 		union ()
 		{
-			card ( cardHolderW - 40, 2*wallThickness,  wallThickness );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, fillet=0.5 );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				cylinder ( r=wallThickness, h=wallThickness, $fn=10 );
+				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
 			translate ( [cardHolderW - 40, wallThickness, 0] )
-				cylinder ( r=wallThickness, h=wallThickness, $fn=10 );
+				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
 		}
 	}
 	translate ( [ 20, cardHolderL-(2*wallThickness), 2*cardHolderH] )
 	{
 		union ()
 		{
-			card ( cardHolderW - 40, 2*wallThickness,  wallThickness );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, fillet=0.5 );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				cylinder ( r=wallThickness, h=wallThickness, $fn=10 );
+				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
 			translate ( [cardHolderW-40, wallThickness, 0] )
-				cylinder ( r=wallThickness, h=wallThickness, $fn=10 );
+				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
 		}
 	}
     
@@ -103,24 +118,24 @@ module topStops ()
 	{
 		union ()
 		{
-			card ( cardHolderW - 40, 2*wallThickness,  wallThickness );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, fillet=0.5 );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				cylinder ( r=wallThickness, h=wallThickness, $fn=10 );
+				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
 			translate ( [cardHolderW - 40, wallThickness, 0] )
-				cylinder ( r=wallThickness, h=wallThickness, $fn=10 );
+				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
 		}
 	}
 	translate ( [ 20, cardHolderL-(2*wallThickness), 0] )
 	{
 		union ()
 		{
-			card ( cardHolderW - 40, 2*wallThickness,  wallThickness );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, fillet=0.5 );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				cylinder ( r=wallThickness, h=wallThickness, $fn=10 );
+				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5);
 			translate ( [cardHolderW-40, wallThickness, 0] )
-				cylinder ( r=wallThickness, h=wallThickness, $fn=10 );
+				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
 		}
 	}
 
@@ -131,9 +146,7 @@ module d1CardHolder ()
 	union() {
 	difference ()
 	{
-		difference ()
-		{
-			card (cardHolderW, cardHolderL, 2*cardHolderH+wallThickness);
+            rcard (cardHolderW, cardHolderL, 2*cardHolderH+wallThickness, 0.5 );
             
 			translate ( [10, 8, cardHolderH-wallThickness] )
 				card ( cardHolderW - 40, 2*wallThickness, 4*wallThickness );
@@ -142,13 +155,14 @@ module d1CardHolder ()
 				card ( cardHolderW - 40, 2*wallThickness, 4*wallThickness );
 
 			 translate ([wallThickness,wallThickness,wallThickness+cardHolderH])
-				card (cardHolderW-2*wallThickness, cardHolderL-2*wallThickness, cardHolderH);
+				card (w=cardHolderW-2*wallThickness, l=cardHolderL-2*wallThickness, h=cardHolderH+wallThickness);
 
 			 translate ([wallThickness,wallThickness,0])
-				card (cardHolderW-2*wallThickness, cardHolderL-2*wallThickness, cardHolderH);
-		}
+				card (w=cardHolderW-2*wallThickness, l=cardHolderL-2*wallThickness, h=cardHolderH);
+        
 		translate ([0, (cardHolderL)/2, 0])
-		 	cylinder (  h=4*cardHolderH+2*wallThickness, r = 8, center=true);
+		 	cylinder (  h=5*cardHolderH, r = 8, center=true);
+
 	}
 
     wallDist = 15;
