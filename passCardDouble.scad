@@ -2,30 +2,29 @@
 use <Round-Anything/polyround.scad>
 
 $fn = 64;
+cardWidth = 87.01;
+cardLength = 55.51;
+cardHeight  = 2.25;
+cardPerimeterTolerance = 0.51;
+cardThicknessTolerance = 0.11;
 
-cardMarginPer = 0.49;
-cardMarginH = 0.09;
-cardWidth = 87 + cardMarginPer;
-cardLength = 55.5 + cardMarginPer;
-cardHeight  = 3*0.76 + cardMarginH;
+wallThickness = 1.75;
 
-wallThickness = 1.89;
+cardHolderW = wallThickness + cardWidth + cardPerimeterTolerance;
+cardHolderL = wallThickness + cardLength + cardPerimeterTolerance;
+cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
 
-cardHolderW = wallThickness + cardWidth;
-cardHolderL = wallThickness + cardLength;
-cardHolderH = wallThickness + cardHeight;
-
-myText = "YOUR COMPANY";
+strapText = "YOUR COMPANY";
 fontName = "Lato:style=Regular";
-textSize = 4.05;
+textHeight = 4.05;
 textDepth = 0.50;
-textPosition = 1.50;
+textVerticalPosition = 1.50;
 
-holderL = 18;
+strapHeight = 18;
 
 module rcard( w, l, h, fillet )
 {
-    extrudeWithRadius(h,fillet,fillet,30)
+    extrudeWithRadius(h,fillet,fillet,$fn)
     square([w, l]);
 }
 
@@ -36,44 +35,54 @@ module card ( w, l, h )
 
 module rcylinder(r, h, fillet, center)
 {
-    extrudeWithRadius(h,fillet,fillet,30)
+    extrudeWithRadius(h,fillet,fillet,$fn)
     circle(r);
 }
 
-module d1CardStrap ()
+// chw = cardHolderW - card holder width
+// chl = cardHolderL - card holder length
+// chh = cardHolderH - card holder height
+// wt = wallThickness - wall thickness
+// sh = strapHeight - strap height
+// tvp = textVerticalPosition - text vertical position on strap
+// st = strapText - the text to be displayed on the strap
+// td = textDepth - the distance the text is extruded from the face of the strap
+// th = textHeight - the size/height of the text
+// fn = fontName - the name of the type face used to render the text
+module d1CardStrap (chw, chl, chh, wt, sh, tvp, st, td, th, fn)
 {
 	difference ()
 	{
-		translate ( [cardHolderW, 0, cardHolderH] )
+		translate ( [chw, 0, chh] )
 		{
-			rcard ( holderL, cardHolderL, wallThickness, 0.5 );
-			translate ( [textPosition,cardHolderL/2,wallThickness] )
+			rcard ( sh, chl, wt, 0.5 );
+			translate ( [tvp,chl/2,wt] )
 				rotate ([0,0,-90])
-                    linear_extrude(textDepth) 
-                    text(myText, size=textSize, font=fontName, halign="center");
-			translate ( [textPosition,cardHolderL/2,0] )
+                    linear_extrude(td) 
+                    text(st, size=th, font=fn, halign="center");
+			translate ( [tvp,chl/2,0] )
 				rotate ([0,180,-90])
-                    linear_extrude(textDepth) 
-                    text(myText, size=textSize, font=fontName, halign="center");
+                    linear_extrude(td) 
+                    text(st, size=th, font=fn, halign="center");
 		}
 		//	cutting angles of strap
-		translate ( [cardHolderW+holderL, -(holderL/2), cardHolderH] )
+		translate ( [chw+sh, -(sh/2), chh] )
 		{
 			rotate ([0,0,180])
 			{
-				cylinder ( r=holderL+wallThickness, h=10, center=true );
+				cylinder ( r=sh+wt, h=10, center=true );
 			}
 		}
-		translate ( [cardHolderW+holderL, cardHolderL+(holderL/2), cardHolderH] )
+		translate ( [chw+sh, chl+(sh/2), chh] )
 		{
 			rotate ([0,0,180])
 			{
-				cylinder ( r=holderL+wallThickness, h=10, center=true );
+				cylinder ( r=sh+wt, h=10, center=true );
 			}
 		}
 	
 		// Strap hole
-		translate ( [(cardHolderW+(holderL/2)-0.5), cardHolderL/2-5, cardHolderH-1] )
+		translate ( [(chw+(sh/2)-0.5), chl/2-5, chh-1] )
 		{
 			card (5, 10, 10);
 			translate ([2.5,0,-1])
@@ -82,7 +91,6 @@ module d1CardStrap ()
 				cylinder ( r=2.5, h=10 );
 			translate ([2.5,5,-5])
 				cylinder ( r=3.5, h=10 );
-
 		}
 	}	
 }	
@@ -180,7 +188,19 @@ module d1CardHolder ()
 
 	// Top overhang
 	topStops();
-	d1CardStrap();
+    // strap
+    d1CardStrap(
+        chw=cardHolderW, 
+        chl=cardHolderL,
+        chh=cardHolderH,
+        wt=wallThickness,
+        sh=strapHeight,
+        tvp=textVerticalPosition,
+        st=strapText,
+        td=textDepth,
+        th=textHeight,
+        fn=fontName
+    );
 	}
 }
 
