@@ -16,9 +16,9 @@ cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
 
 strapText = "YOUR COMPANY";
 fontName = "Lato:style=Regular";
-textHeight = 4.05;
-textDepth = 0.50;
-textVerticalPosition = 1.50;
+textHeight = 4.0;
+textDepth = 0.88;
+textVerticalPosition = 1.1;
 
 strapHeight = 18;
 
