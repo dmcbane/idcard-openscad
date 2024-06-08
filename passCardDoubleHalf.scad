@@ -218,5 +218,9 @@ module cardHolder ()
 	);
 	}
 }
-
-cardHolder();
+// same as the card holder except chop off the bottom
+difference() {
+    cardHolder();
+    translate ([-wallThickness, -wallThickness, (cardHolderH)+(wallThickness/4*3)])
+        card(cardHolderW*2, cardHolderL*2, cardHolderH*2);
+}
