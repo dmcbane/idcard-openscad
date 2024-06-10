@@ -1,7 +1,7 @@
 // https://github.com/Irev-Dev/Round-Anything
 use <Round-Anything/polyround.scad>
 
-$fn = 64;
+$fn = 256;
 cardWidth = 87.01;
 cardLength = 55.51;
 cardHeight  = 2.25;
@@ -21,6 +21,8 @@ textDepth = 0.88;
 textVerticalPosition = 1.1;
 
 strapHeight = 18;
+
+oneHalf=true;
 
 // card with fillet
 module rcard( w, l, h, fillet )
@@ -42,6 +44,15 @@ module rcylinder(r, h, fillet, center)
 	circle(r);
 }
 
+
+module cornerCutter (r1, r2, ht) {
+    difference() {
+        cube([r2, r2, ht]);
+        translate([0,0,-1])linear_extrude(ht+2, [0,0,1])circle(r1);
+    }
+}
+
+
 // chw = cardHolderW - card holder width
 // chl = cardHolderL - card holder length
 // chh = cardHolderH - card holder height
@@ -59,7 +70,10 @@ module cardStrap (chw, chl, chh, wt, sh, tvp, st, td, th, fn)
 		// text
         translate ( [chw, 0, chh] )
 		{
-			rcard ( sh, chl, wt, 0.5 );
+            rcard ( sh, chl, wt, 0.5 );
+            translate([-wt, 0, 0])
+                card ( sh/2, chl, wt);
+
 			translate ( [tvp,chl/2,wt] )
 				rotate ([0,0,-90])
 			        linear_extrude(td) 
@@ -69,22 +83,17 @@ module cardStrap (chw, chl, chh, wt, sh, tvp, st, td, th, fn)
 					linear_extrude(td) 
 					text(st, size=th, font=fn, halign="center");
 		}
-		//	cutting angles of strap
-		translate ( [chw+sh, -(sh/2), chh] )
-		{
-			rotate ([0,0,180])
-			{
-				cylinder ( r=sh+wt, h=10, center=true );
-			}
-		}
-		translate ( [chw+sh, chl+(sh/2), chh] )
-		{
-			rotate ([0,0,180])
-			{
-				cylinder ( r=sh+wt, h=10, center=true );
-			}
-		}
-	
+		//	cutting corners of strap
+        translate( [ chw, sh, 0 ] )
+        {
+            rotate( [ 0, 0, 270 ] )
+            {
+                cornerCutter( r1=sh, r2=sh*2, ht=10 );
+            }
+        }
+        translate([chw, chl-sh, 0])
+            cornerCutter(r1=sh, r2=sh*2, ht=10);
+            	
 		// Strap hole
 		translate ( [(chw+(sh/2)-0.5), chl/2-5, chh-1] )
 		{
@@ -219,4 +228,11 @@ module cardHolder ()
 	}
 }
 
-cardHolder();
+if (oneHalf)
+    difference() {
+        cardHolder();
+        translate ([-wallThickness, -wallThickness, (cardHolderH)+(wallThickness/4*3)])
+            card(cardHolderW*2, cardHolderL*2, cardHolderH*2);
+    }
+else
+    cardHolder();
