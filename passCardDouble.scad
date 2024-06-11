@@ -1,5 +1,5 @@
 // https://github.com/Irev-Dev/Round-Anything
-use <Round-Anything/polyround.scad>
+// use <Round-Anything/polyround.scad>
 
 $fn = 256;
 cardWidth = 87.01;
@@ -16,18 +16,19 @@ cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
 
 strapText = "YOUR COMPANY";
 fontName = "Lato:style=Regular";
-textHeight = 4.0;
-textDepth = 0.88;
-textVerticalPosition = 1.1;
+textHeight = 4.65;
+textDepth = 0.98;
+textVerticalPosition = 1.5;
 
 strapHeight = 18;
 
-oneHalf=true;
+oneHalf=false;
 
 // card with fillet
 module rcard( w, l, h, fillet )
 {
-	extrudeWithRadius(h,fillet,fillet,$fn)
+	// extrudeWithRadius(h,fillet,fillet,$fn)
+    linear_extrude(h)
 	square([w, l]);
 }
 
@@ -40,7 +41,8 @@ module card ( w, l, h )
 // cylinder with fillet
 module rcylinder(r, h, fillet, center)
 {
-	extrudeWithRadius(h,fillet,fillet,$fn)
+	//extrudeWithRadius(h,fillet,fillet,$fn)
+    linear_extrude(h)
 	circle(r);
 }
 
@@ -71,8 +73,8 @@ module cardStrap (chw, chl, chh, wt, sh, tvp, st, td, th, fn)
         translate ( [chw, 0, chh] )
 		{
             rcard ( sh, chl, wt, 0.5 );
-            translate([-wt, 0, 0])
-                card ( sh/2, chl, wt);
+            //translate([-wt, 0, 0])
+            //    card ( sh/2, chl, wt);
 
 			translate ( [tvp,chl/2,wt] )
 				rotate ([0,0,-90])
