@@ -2,8 +2,8 @@
 // use <Round-Anything/polyround.scad>
 
 $fn = 256;
-cardWidth = 87.01;
-cardLength = 55.51;
+cardWidth = 87.11;
+cardLength = 55.61;
 cardHeight  = 2.25;
 cardPerimeterTolerance = 0.51;
 cardThicknessTolerance = 0.11;
@@ -14,10 +14,10 @@ cardHolderW = wallThickness + cardWidth + cardPerimeterTolerance;
 cardHolderL = wallThickness + cardLength + cardPerimeterTolerance;
 cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
 
-strapText = "YOUR COMPANY";
-fontName = "Lato:style=Regular";
-textHeight = 4.65;
-textDepth = 0.98;
+strapText = "NIWC LANT 54200";
+fontName = "DejaVu Sans:style=Book";
+textHeight = 4.5;
+textDepth = 0.3;
 textVerticalPosition = 1.5;
 
 strapHeight = 18;
