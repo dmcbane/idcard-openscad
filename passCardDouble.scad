@@ -4,6 +4,7 @@
 include <BOSL2/std.scad>
 
 $fn = 256;
+$chamfer = 0.5;
 cardWidth = 87.61;
 cardLength = 56.11;
 cardHeight  = 2.25;
@@ -16,7 +17,15 @@ cardHolderW = wallThickness + cardWidth + cardPerimeterTolerance;
 cardHolderL = wallThickness + cardLength + cardPerimeterTolerance;
 cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
 
-strapText = "NIWC LANT 54200";
+//strapText = "NIWC LANT 54200";
+//strapText = "NIWC LANT 54210";
+//strapText = "NIWC LANT 54220";
+//strapText = "NIWC LANT 54230";
+//strapText = "NIWC LANT 54250";
+//strapText = "NIWC LANT 54260";
+//strapText = "NIWC LANT 54270";
+//strapText = "NIWC LANT 59150";
+strapText = "NIWC LANT 89500";
 fontName = "DejaVu Sans:style=Condensed";
 textHeight = 4.7;
 textDepth = 0.33;
@@ -29,53 +38,11 @@ strapHeight = 18;
 
 oneHalf=false;
 
-RoundedCube(size = [10, 10, 10], center = false,radius = 0.5,fn=10);
 
-
-module RoundedCube(size = [1, 1, 1], center = false,radius = 0.5,fn=10){
-
-obj_translate = (center == true) ?
-[0, 0, 0] : [
-(size[0] / 2),
-(size[1] / 2),
-(size[2] / 2)
-];
-    
-    //echo (obj_translate);
-translate(v = obj_translate) {
-        hull(){
-            cube([size[0]-radius-radius,size[1]-radius-radius,size[2]],center=true);
-            cube([size[0]-radius-radius,size[1],size[2]-radius-radius],center=true);
-            cube([size[0],size[1]-radius-radius,size[2]-radius-radius],center=true);
-           
-            translate ([size[0]/2-radius,size[1]/2-radius,size[2]/2-radius])
-            sphere(r = radius,$fn = fn);
-            translate ([-size[0]/2+radius,size[1]/2-radius,size[2]/2-radius])
-            sphere(r = radius,$fn = fn);
-            translate ([-size[0]/2+radius,-size[1]/2+radius,size[2]/2-radius])
-            sphere(r = radius,$fn = fn);
-            translate ([size[0]/2-radius,-size[1]/2+radius,size[2]/2-radius])
-            sphere(r = radius,$fn = fn);
-           
-            translate ([size[0]/2-radius,size[1]/2-radius,-size[2]/2+radius])
-            sphere(r = radius,$fn = fn);
-            translate ([-size[0]/2+radius,size[1]/2-radius,-size[2]/2+radius])
-            sphere(r = radius,$fn = fn);
-            translate ([-size[0]/2+radius,-size[1]/2+radius,-size[2]/2+radius])
-            sphere(r = radius,$fn = fn);
-            translate ([size[0]/2-radius,-size[1]/2+radius,-size[2]/2+radius])
-            sphere(r = radius,$fn = fn);
-        }
-    }
-}
-
-// card with fillet
-module rcard( w, l, h, fillet )
+// card with chamfer
+module rcard( w, l, h, chamfer )
 {
-    RoundedCube(size=[w, l, h], center=false, radius=fillet, fn=$fn);
-	// // extrudeWithRadius(h,fillet,fillet,$fn)
-    // linear_extrude(h)
-	// square([w, l]);
+    cuboid(size=[w, l, h], anchor=DOWN+FRONT+LEFT, chamfer=chamfer);
 }
 
 // card no radius
@@ -84,12 +51,10 @@ module card ( w, l, h )
 	cube ( [w, l, h] );
 }
 
-// cylinder with fillet
-module rcylinder(r, h, fillet, center)
+// cylinder with chamfer
+module rcylinder(r, h, chamfer, center)
 {
-	//extrudeWithRadius(h,fillet,fillet,$fn)
-    linear_extrude(h)
-	circle(r);
+    cyl(r=r, l=h, anchor=DOWN, chamfer=chamfer);
 }
 
 
@@ -118,9 +83,8 @@ module cardStrap (chw, chl, chh, wt, sh, tvp, st, td, th, fn)
 		// text
         translate ( [chw, 0, chh] )
 		{
-            rcard ( sh, chl, wt, 0.5 );
-            //translate([-wt, 0, 0])
-            //    card ( sh/2, chl, wt);
+            translate ( [-$chamfer, 0, 0])
+                card ( sh+$chamfer, chl, wt );
 
 			translate ( [tvp,chl/2,wt] )
 				rotate ([0,0,-90])
@@ -163,12 +127,12 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, fillet=0.5 );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=$chamfer );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
 			translate ( [cardHolderW - 40, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
 		}
 	}
     
@@ -177,12 +141,12 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, fillet=0.5 );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=$chamfer );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
 			translate ( [cardHolderW-40, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
 		}
 	}
 	
@@ -191,12 +155,12 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, fillet=0.5 );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=$chamfer );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
 			translate ( [cardHolderW - 40, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
 		}
 	}
     // top right
@@ -204,12 +168,12 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, fillet=0.5 );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=$chamfer );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5);
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer);
 			translate ( [cardHolderW-40, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, fillet=0.5 );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
 		}
 	}
 
@@ -220,7 +184,7 @@ module cardSkid (x, y, z)
     translate ( [x, y, z] )
 		    // card ( cardHolderW - 44, skidWidth, skidDepth );
         rotate ( [0, 90, 0] )
-            rcylinder ( r=skidWidth/2, h=cardHolderW - 44, fillet=0.5 );
+            rcylinder ( r=skidWidth/2, h=cardHolderW - 44, chamfer=$chamfer );
 }
 
 module cardHolder ()
@@ -228,7 +192,7 @@ module cardHolder ()
 	union() {
 	difference ()
 	{
-		rcard (cardHolderW, cardHolderL, 2*cardHolderH+wallThickness, 0.5 );
+		rcard (cardHolderW, cardHolderL, 2*cardHolderH+wallThickness, $chamfer );
 			
         // left side slot
 		translate ( [10, 8, cardHolderH-wallThickness] )
