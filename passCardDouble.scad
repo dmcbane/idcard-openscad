@@ -1,9 +1,11 @@
 // https://github.com/Irev-Dev/Round-Anything
 // use <Round-Anything/polyround.scad>
+//https://github.com/BelfrySCAD/BOSL2.git
+include <BOSL2/std.scad>
 
 $fn = 256;
-cardWidth = 87.11;
-cardLength = 55.61;
+cardWidth = 87.61;
+cardLength = 56.11;
 cardHeight  = 2.25;
 cardPerimeterTolerance = 0.51;
 cardThicknessTolerance = 0.11;
@@ -15,21 +17,65 @@ cardHolderL = wallThickness + cardLength + cardPerimeterTolerance;
 cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
 
 strapText = "NIWC LANT 54200";
-fontName = "DejaVu Sans:style=Book";
-textHeight = 4.5;
-textDepth = 0.3;
+fontName = "DejaVu Sans:style=Condensed";
+textHeight = 4.7;
+textDepth = 0.33;
 textVerticalPosition = 1.5;
+
+skidDepth = 0.5;
+skidWidth = 1.0;
 
 strapHeight = 18;
 
 oneHalf=false;
 
+RoundedCube(size = [10, 10, 10], center = false,radius = 0.5,fn=10);
+
+
+module RoundedCube(size = [1, 1, 1], center = false,radius = 0.5,fn=10){
+
+obj_translate = (center == true) ?
+[0, 0, 0] : [
+(size[0] / 2),
+(size[1] / 2),
+(size[2] / 2)
+];
+    
+    //echo (obj_translate);
+translate(v = obj_translate) {
+        hull(){
+            cube([size[0]-radius-radius,size[1]-radius-radius,size[2]],center=true);
+            cube([size[0]-radius-radius,size[1],size[2]-radius-radius],center=true);
+            cube([size[0],size[1]-radius-radius,size[2]-radius-radius],center=true);
+           
+            translate ([size[0]/2-radius,size[1]/2-radius,size[2]/2-radius])
+            sphere(r = radius,$fn = fn);
+            translate ([-size[0]/2+radius,size[1]/2-radius,size[2]/2-radius])
+            sphere(r = radius,$fn = fn);
+            translate ([-size[0]/2+radius,-size[1]/2+radius,size[2]/2-radius])
+            sphere(r = radius,$fn = fn);
+            translate ([size[0]/2-radius,-size[1]/2+radius,size[2]/2-radius])
+            sphere(r = radius,$fn = fn);
+           
+            translate ([size[0]/2-radius,size[1]/2-radius,-size[2]/2+radius])
+            sphere(r = radius,$fn = fn);
+            translate ([-size[0]/2+radius,size[1]/2-radius,-size[2]/2+radius])
+            sphere(r = radius,$fn = fn);
+            translate ([-size[0]/2+radius,-size[1]/2+radius,-size[2]/2+radius])
+            sphere(r = radius,$fn = fn);
+            translate ([size[0]/2-radius,-size[1]/2+radius,-size[2]/2+radius])
+            sphere(r = radius,$fn = fn);
+        }
+    }
+}
+
 // card with fillet
 module rcard( w, l, h, fillet )
 {
-	// extrudeWithRadius(h,fillet,fillet,$fn)
-    linear_extrude(h)
-	square([w, l]);
+    RoundedCube(size=[w, l, h], center=false, radius=fillet, fn=$fn);
+	// // extrudeWithRadius(h,fillet,fillet,$fn)
+    // linear_extrude(h)
+	// square([w, l]);
 }
 
 // card no radius
@@ -169,6 +215,14 @@ module cardEdgeGrips ()
 
 }
 
+module cardSkid (x, y, z)
+{
+    translate ( [x, y, z] )
+		    // card ( cardHolderW - 44, skidWidth, skidDepth );
+        rotate ( [0, 90, 0] )
+            rcylinder ( r=skidWidth/2, h=cardHolderW - 44, fillet=0.5 );
+}
+
 module cardHolder ()
 {
 	union() {
@@ -200,16 +254,14 @@ module cardHolder ()
 
 	wallDist = 15;
 	count = 4;
-	stop = cardHolderL - 2*0.5 - 2*wallDist;
+	stop = cardHolderL - skidWidth - 2*wallDist;
 	increment = stop/(count - 1);
 
 	for(i = [0: count-1]) let(y = wallDist + (i * increment)) {
 		// bottom side skids
-        translate ( [12, y, cardHolderH+wallThickness] )
-		    card ( cardHolderW - 44, 0.5, 0.3 );
+        cardSkid(12, y, cardHolderH+wallThickness);
         // top side skids
-		translate ( [12, y, cardHolderH-0.3] )
-			card ( cardHolderW - 44, 0.5, 0.3 );
+        cardSkid(12, y, cardHolderH-(skidDepth / 2) + cardThicknessTolerance*2);
 	}
 
 	// Top overhang
