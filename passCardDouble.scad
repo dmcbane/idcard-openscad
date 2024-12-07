@@ -1,23 +1,17 @@
-// https://github.com/Irev-Dev/Round-Anything
-// use <Round-Anything/polyround.scad>
-//https://github.com/BelfrySCAD/BOSL2.git
+// cd into the User Library Path
+// git clone https://github.com/BelfrySCAD/BOSL2.git
 include <BOSL2/std.scad>
 
 $fn = 256;
-$chamfer = 0.5;
 cardWidth = 87.61;
 cardLength = 56.11;
 cardHeight  = 2.25;
 cardPerimeterTolerance = 0.51;
 cardThicknessTolerance = 0.11;
-
+chamferDepth = 0.5;
 wallThickness = 1.75;
 
-cardHolderW = wallThickness + cardWidth + cardPerimeterTolerance;
-cardHolderL = wallThickness + cardLength + cardPerimeterTolerance;
-cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
-
-//strapText = "NIWC LANT 54200";
+strapText = "NIWC LANT 54200";
 //strapText = "NIWC LANT 54210";
 //strapText = "NIWC LANT 54220";
 //strapText = "NIWC LANT 54230";
@@ -25,7 +19,9 @@ cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
 //strapText = "NIWC LANT 54260";
 //strapText = "NIWC LANT 54270";
 //strapText = "NIWC LANT 59150";
-strapText = "NIWC LANT 89500";
+//strapText = "NIWC LANT 89500";
+//strapText = "U.S. ARMY";
+//strapText = "DOI  USGS";
 fontName = "DejaVu Sans:style=Condensed";
 textHeight = 4.7;
 textDepth = 0.33;
@@ -36,7 +32,13 @@ skidWidth = 1.0;
 
 strapHeight = 18;
 
-oneHalf=false;
+oneHalf=true;
+
+// card size calculations
+cardHolderW = wallThickness + cardWidth + cardPerimeterTolerance;
+cardHolderL = wallThickness + cardLength + cardPerimeterTolerance;
+cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
+
 
 
 // card with chamfer
@@ -83,8 +85,8 @@ module cardStrap (chw, chl, chh, wt, sh, tvp, st, td, th, fn)
 		// text
         translate ( [chw, 0, chh] )
 		{
-            translate ( [-$chamfer, 0, 0])
-                card ( sh+$chamfer, chl, wt );
+            translate ( [-chamferDepth, 0, 0])
+                card ( sh+chamferDepth, chl, wt );
 
 			translate ( [tvp,chl/2,wt] )
 				rotate ([0,0,-90])
@@ -127,12 +129,12 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=$chamfer );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 			translate ( [cardHolderW - 40, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
 	}
     
@@ -141,12 +143,12 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=$chamfer );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 			translate ( [cardHolderW-40, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
 	}
 	
@@ -155,12 +157,12 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=$chamfer );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 			translate ( [cardHolderW - 40, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
 	}
     // top right
@@ -168,12 +170,12 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=$chamfer );
+			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
 			translate ( [0, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer);
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth);
 			translate ( [cardHolderW-40, wallThickness, 0] )
-				rcylinder ( r=wallThickness, h=wallThickness, chamfer=$chamfer );
+				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
 	}
 
@@ -184,7 +186,7 @@ module cardSkid (x, y, z)
     translate ( [x, y, z] )
 		    // card ( cardHolderW - 44, skidWidth, skidDepth );
         rotate ( [0, 90, 0] )
-            rcylinder ( r=skidWidth/2, h=cardHolderW - 44, chamfer=$chamfer );
+            rcylinder ( r=skidWidth/2, h=cardHolderW - 44, chamfer=chamferDepth );
 }
 
 module cardHolder ()
@@ -192,7 +194,7 @@ module cardHolder ()
 	union() {
 	difference ()
 	{
-		rcard (cardHolderW, cardHolderL, 2*cardHolderH+wallThickness, $chamfer );
+		rcard (cardHolderW, cardHolderL, 2*cardHolderH+wallThickness, chamferDepth );
 			
         // left side slot
 		translate ( [10, 8, cardHolderH-wallThickness] )
@@ -249,7 +251,7 @@ module cardHolder ()
 if (oneHalf)
     difference() {
         cardHolder();
-        translate ([-wallThickness, -wallThickness, (cardHolderH)+(wallThickness/4*3)])
+        translate ([-wallThickness, -wallThickness, (cardHolderH)+(wallThickness/2)])
             card(cardHolderW*2, cardHolderL*2, cardHolderH*2);
     }
 else
