@@ -2,16 +2,26 @@
 // git clone https://github.com/BelfrySCAD/BOSL2.git
 include <BOSL2/std.scad>
 
+// steps in curves
 $fn = 256;
+// card width mm
 cardWidth = 87.61;
+// card width mm
 cardLength = 56.11;
+// card thckness mm
 cardHeight  = 2.25;
+// perimeter tolerance mm
 cardPerimeterTolerance = 0.51;
+// thickness tolerance mm
 cardThicknessTolerance = 0.11;
+// chamfer mm
 chamferDepth = 0.5;
+// wall thickness mm
 wallThickness = 1.75;
 
-strapText = "NIWC LANT 54200";
+// Select Strap Text
+strapText = "";
+//strapText = "NIWC LANT 54200";
 //strapText = "NIWC LANT 54210";
 //strapText = "NIWC LANT 54220";
 //strapText = "NIWC LANT 54230";
@@ -22,24 +32,34 @@ strapText = "NIWC LANT 54200";
 //strapText = "NIWC LANT 89500";
 //strapText = "U.S. ARMY";
 //strapText = "DOI  USGS";
+// Select Strap Text Font
 fontName = "DejaVu Sans:style=Condensed";
+// text height mm
 textHeight = 4.7;
-textDepth = 0.33;
+// text depth mm
+textDepth = 0.5;
+// text vertical position mm
 textVerticalPosition = 1.5;
-
+// skid depth mm
 skidDepth = 0.5;
+// skid width mm
 skidWidth = 1.0;
-
+// strap height mm
 strapHeight = 18;
+// Render only one side of the card holder
+oneHalf = true;
+// Generate supports for 3D printing horizontally
+generateSupports = true;
+// Support diameter mm
+supportDiameter=1;
+// Support to model distance
+supportOffset=0.125;
 
-oneHalf=true;
 
 // card size calculations
 cardHolderW = wallThickness + cardWidth + cardPerimeterTolerance;
 cardHolderL = wallThickness + cardLength + cardPerimeterTolerance;
 cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
-
-
 
 // card with chamfer
 module rcard( w, l, h, chamfer )
@@ -120,7 +140,16 @@ module cardStrap (chw, chl, chh, wt, sh, tvp, st, td, th, fn)
 				cylinder ( r=3.5, h=10 );
 		}
 	}	
-}	
+}
+
+module edgeSupport (position)
+{
+    if (generateSupports)
+    {
+        translate( position )
+            rcylinder ( r=supportDiameter/2, h=cardHolderH-wallThickness-supportOffset, chamfer=supportDiameter/2-supportOffset );
+    };
+}
 
 module cardEdgeGrips ()
 {
@@ -131,11 +160,15 @@ module cardEdgeGrips ()
 		{
 			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
-			translate ( [0, wallThickness, 0] )
+			translate ( [(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
-			translate ( [cardHolderW - 40, wallThickness, 0] )
+			translate ( [cardHolderW-40-(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
+        
+        for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
+            edgeSupport([(i*5), 2*wallThickness-chamferDepth-supportDiameter/8, -cardHolderH/2-wallThickness/4+2*supportOffset]);
+        }
 	}
     
 	// bottom right
@@ -145,11 +178,15 @@ module cardEdgeGrips ()
 		{
 			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
-			translate ( [0, wallThickness, 0] )
+			translate ( [(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
-			translate ( [cardHolderW-40, wallThickness, 0] )
+			translate ( [cardHolderW-40-(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
+
+        for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
+            edgeSupport([(i*5), 0+chamferDepth+supportDiameter/8, -cardHolderH/2-wallThickness/4+2*supportOffset]);
+        }
 	}
 	
 	// top left
@@ -159,11 +196,15 @@ module cardEdgeGrips ()
 		{
 			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
-			translate ( [0, wallThickness, 0] )
+			translate ( [(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
-			translate ( [cardHolderW - 40, wallThickness, 0] )
+			translate ( [cardHolderW-40-(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
+        
+        for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
+            edgeSupport([(i*5), 2*wallThickness-chamferDepth-supportDiameter/8, cardHolderH/2-2*supportOffset]);
+        }
 	}
     // top right
 	translate ( [ 20, cardHolderL-(2*wallThickness), 0] )
@@ -172,11 +213,15 @@ module cardEdgeGrips ()
 		{
 			rcard ( w=cardHolderW - 40, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
-			translate ( [0, wallThickness, 0] )
+			translate ( [(wallThickness-chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth);
-			translate ( [cardHolderW-40, wallThickness, 0] )
+			translate ( [cardHolderW-40-(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
+        
+        for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
+        edgeSupport([(i*5), 0+chamferDepth+supportDiameter/8, cardHolderH/2-2*supportOffset]);
+        }
 	}
 
 }

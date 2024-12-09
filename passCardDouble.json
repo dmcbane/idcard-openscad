@@ -1,0 +1,44 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "$fn": "256",
+            "cardHeight": "2.25",
+            "cardLength": "56.109999999999999",
+            "cardPerimeterTolerance": "0.51000000000000001",
+            "cardThicknessTolerance": "0.11",
+            "cardWidth": "87.609999999999999",
+            "chamferDepth": "0.5",
+            "fontName": "DejaVu Sans:style=Condensed",
+            "oneHalf": "false",
+            "skidDepth": "0.5",
+            "skidWidth": "1",
+            "strapHeight": "18",
+            "strapText": "NIWC LANT 54210",
+            "textDepth": "0.5",
+            "textHeight": "4.7000000000000002",
+            "textVerticalPosition": "1.5",
+            "wallThickness": "1.75"
+        },
+        "New set 2": {
+            "$fn": "256",
+            "cardHeight": "2.25",
+            "cardLength": "56.109999999999999",
+            "cardPerimeterTolerance": "0.51000000000000001",
+            "cardThicknessTolerance": "0.11",
+            "cardWidth": "87.609999999999999",
+            "chamferDepth": "0.5",
+            "fontName": "DejaVu Sans:style=Condensed",
+            "generateSupports": "false",
+            "oneHalf": "false",
+            "skidDepth": "0.5",
+            "skidWidth": "1",
+            "strapHeight": "19",
+            "strapText": "",
+            "textDepth": "0.5",
+            "textHeight": "4.7000000000000002",
+            "textVerticalPosition": "1.5",
+            "wallThickness": "1.75"
+        }
+    }
+}
