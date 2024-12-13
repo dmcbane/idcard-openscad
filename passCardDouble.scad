@@ -146,8 +146,10 @@ module edgeSupport (position)
 {
     if (generateSupports)
     {
-        translate( position )
+        translate( position ) {
             rcylinder ( r=supportDiameter/2, h=cardHolderH-wallThickness-supportOffset, chamfer=supportDiameter*5/12-supportOffset );
+            rcylinder ( r=supportDiameter/4, h=cardHolderH-wallThickness/2-supportOffset);
+        }
     };
 }
 
@@ -166,8 +168,8 @@ module cardEdgeGrips ()
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
         
-        for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
-            edgeSupport([(i*5), 2*wallThickness-chamferDepth-supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
+        for(i = [0: (cardHolderW - 40)/ 10 + 1]) {
+            edgeSupport([(i*10), 2*wallThickness-chamferDepth-supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
         }
 	}
     
@@ -184,8 +186,8 @@ module cardEdgeGrips ()
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
 
-        for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
-            edgeSupport([(i*5), 0+chamferDepth+supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
+        for(i = [0: (cardHolderW - 40)/ 10 + 1]) {
+            edgeSupport([(i*10), 0+chamferDepth+supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
         }
 	}
 	
@@ -202,8 +204,8 @@ module cardEdgeGrips ()
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
         
-        for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
-            edgeSupport([(i*5), 2*wallThickness-chamferDepth-supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
+        for(i = [0: (cardHolderW - 40)/ 10 + 1]) {
+            edgeSupport([(i*10), 2*wallThickness-chamferDepth-supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
         }
 	}
     // top right
@@ -219,8 +221,8 @@ module cardEdgeGrips ()
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
         
-        for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
-        edgeSupport([(i*5), 0+chamferDepth+supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
+        for(i = [0: (cardHolderW - 40)/ 10 + 1]) {
+        edgeSupport([(i*10), 0+chamferDepth+supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
         }
 	}
 
