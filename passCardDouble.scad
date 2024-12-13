@@ -53,7 +53,7 @@ generateSupports = true;
 // Support diameter mm
 supportDiameter=1;
 // Support to model distance
-supportOffset=0.125;
+supportOffset=0;
 
 
 // card size calculations
@@ -147,7 +147,7 @@ module edgeSupport (position)
     if (generateSupports)
     {
         translate( position )
-            rcylinder ( r=supportDiameter/2, h=cardHolderH-wallThickness-supportOffset, chamfer=supportDiameter/2-supportOffset );
+            rcylinder ( r=supportDiameter/2, h=cardHolderH-wallThickness-supportOffset, chamfer=supportDiameter*5/12-supportOffset );
     };
 }
 
@@ -167,7 +167,7 @@ module cardEdgeGrips ()
 		}
         
         for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
-            edgeSupport([(i*5), 2*wallThickness-chamferDepth-supportDiameter/8, -cardHolderH/2-wallThickness/4+2*supportOffset]);
+            edgeSupport([(i*5), 2*wallThickness-chamferDepth-supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
         }
 	}
     
@@ -185,7 +185,7 @@ module cardEdgeGrips ()
 		}
 
         for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
-            edgeSupport([(i*5), 0+chamferDepth+supportDiameter/8, -cardHolderH/2-wallThickness/4+2*supportOffset]);
+            edgeSupport([(i*5), 0+chamferDepth+supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
         }
 	}
 	
@@ -203,7 +203,7 @@ module cardEdgeGrips ()
 		}
         
         for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
-            edgeSupport([(i*5), 2*wallThickness-chamferDepth-supportDiameter/8, cardHolderH/2-2*supportOffset]);
+            edgeSupport([(i*5), 2*wallThickness-chamferDepth-supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
         }
 	}
     // top right
@@ -220,7 +220,7 @@ module cardEdgeGrips ()
 		}
         
         for(i = [0: (cardHolderW - 40)/ 5 + 1]) {
-        edgeSupport([(i*5), 0+chamferDepth+supportDiameter/8, cardHolderH/2-2*supportOffset]);
+        edgeSupport([(i*5), 0+chamferDepth+supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
         }
 	}
 
