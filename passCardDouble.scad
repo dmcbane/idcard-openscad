@@ -4,14 +4,14 @@ include <BOSL2/std.scad>
 
 // steps in curves
 $fn = 256;
+// card length mm
+cardLength = 85.0;
 // card width mm
-cardWidth = 87.61;
-// card width mm
-cardLength = 56.11;
+cardWidth = 54.0;
 // card thckness mm
 cardHeight  = 2.25;
 // perimeter tolerance mm
-cardPerimeterTolerance = 0.51;
+cardPerimeterTolerance = 0.75;
 // thickness tolerance mm
 cardThicknessTolerance = 0.11;
 // chamfer mm
@@ -43,17 +43,23 @@ textVerticalPosition = 1.5;
 // skid depth mm
 skidDepth = 0.5;
 // skid width mm
-skidWidth = 1.0;
+skidWidth = 1.1;
+// skid length mm
+skidLength = 44.1;
+// skid offset vertically
+skidVerticalOffset = -11.5;
 // strap height mm
-strapHeight = 18;
+strapHeight = 18.1;
 // Render only one side of the card holder
 oneHalf = true;
 // Generate supports for 3D printing horizontally
 generateSupports = true;
 // Support diameter mm
-supportDiameter=1;
-// Support to model distance
-supportOffset=0;
+supportDiameter=1.1;
+// Distance between support and model
+supportOffset=0.0;
+// Distance between supports
+supportDistance=9.5;
 // How much wall to remove in making the grip
 edgeGripLength=50;
 // Size of the card grip arch
@@ -61,9 +67,11 @@ cardGripArch=9;
 
 
 // card size calculations
-cardHolderW = wallThickness + cardWidth + cardPerimeterTolerance;
 cardHolderL = wallThickness + cardLength + cardPerimeterTolerance;
+cardHolderW = wallThickness + cardWidth + cardPerimeterTolerance;
 cardHolderH = wallThickness + cardHeight + cardThicknessTolerance;
+// skid size calculation
+skidL = cardHolderL - skidLength;
 
 // card with chamfer
 module rcard( w, l, h, chamfer )
@@ -92,8 +100,8 @@ module cornerCutter (r1, r2, ht) {
 }
 
 
-// chw = cardHolderW - card holder width
 // chl = cardHolderL - card holder length
+// chw = cardHolderW - card holder width
 // chh = cardHolderH - card holder height
 // wt = wallThickness - wall thickness
 // sh = strapHeight - strap height
@@ -102,38 +110,38 @@ module cornerCutter (r1, r2, ht) {
 // td = textDepth - the distance the text is extruded from the face of the strap
 // th = textHeight - the size/height of the text
 // fn = fontName - the name of the type face used to render the text
-module cardStrap (chw, chl, chh, wt, sh, tvp, st, td, th, fn)
+module cardStrap (chl, chw, chh, wt, sh, tvp, st, td, th, fn)
 {
 	difference ()
 	{
 		// text
-        translate ( [chw, 0, chh] )
+        translate ( [chl, 0, chh] )
 		{
             translate ( [-chamferDepth, 0, 0])
-                card ( sh+chamferDepth, chl, wt );
+                card ( sh+chamferDepth, chw, wt );
 
-			translate ( [tvp,chl/2,wt] )
+			translate ( [tvp,chw/2,wt] )
 				rotate ([0,0,-90])
 			        linear_extrude(td) 
 			        text(st, size=th, font=fn, halign="center");
-			translate ( [tvp,chl/2,0] )
+			translate ( [tvp,chw/2,0] )
 				rotate ([0,180,-90])
 					linear_extrude(td) 
 					text(st, size=th, font=fn, halign="center");
 		}
 		//	cutting corners of strap
-        translate( [ chw, sh, 0 ] )
+        translate( [ chl, sh, 0 ] )
         {
             rotate( [ 0, 0, 270 ] )
             {
                 cornerCutter( r1=sh, r2=sh*2, ht=10 );
             }
         }
-        translate([chw, chl-sh, 0])
+        translate([chl, chw-sh, 0])
             cornerCutter(r1=sh, r2=sh*2, ht=10);
             	
 		// Strap hole
-		translate ( [(chw+(sh/2)-0.5), chl/2-5, chh-1] )
+		translate ( [(chl+(sh/2)-0.5), chw/2-5, chh-1] )
 		{
 			card (5, 10, 10);
 			translate ([2.5,0,-1])
@@ -151,7 +159,8 @@ module edgeSupport (position)
     if (generateSupports)
     {
         translate( position ) {
-            rcylinder ( r=supportDiameter/2, h=cardHolderH-wallThickness-supportOffset, chamfer=supportDiameter*5/12-supportOffset );
+            translate([0,0,supportDiameter*3/8])
+                rcylinder ( r=supportDiameter/2, h=cardHolderH-wallThickness-supportOffset, chamfer=supportDiameter*5/12-supportOffset );
             rcylinder ( r=supportDiameter/4, h=cardHolderH-wallThickness/2-supportOffset);
         }
     };
@@ -164,34 +173,34 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - edgeGripLength, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
+			rcard ( w=cardHolderL - edgeGripLength, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
 			translate ( [(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
-			translate ( [cardHolderW-edgeGripLength-(wallThickness - chamferDepth)/2, wallThickness, 0] )
+			translate ( [cardHolderL-edgeGripLength-(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
         
-        for(i = [0: (cardHolderW - edgeGripLength)/ 10]) {
-            edgeSupport([(i*10), 2*wallThickness-chamferDepth-supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
+        for(i = [0: (cardHolderL - edgeGripLength)/ supportDistance]) {
+            edgeSupport([(i*supportDistance), 2*wallThickness-chamferDepth-supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
         }
 	}
     
 	// bottom right
-    translate ( [ edgeGripLength/2, cardHolderL-(2*wallThickness), 2*cardHolderH] )
+    translate ( [ edgeGripLength/2, cardHolderW-(2*wallThickness), 2*cardHolderH] )
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - edgeGripLength, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
+			rcard ( w=cardHolderL - edgeGripLength, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
 			translate ( [(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
-			translate ( [cardHolderW-edgeGripLength-(wallThickness - chamferDepth)/2, wallThickness, 0] )
+			translate ( [cardHolderL-edgeGripLength-(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
 
-        for(i = [0: (cardHolderW - edgeGripLength)/ 10]) {
-            edgeSupport([(i*10), 0+chamferDepth+supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
+        for(i = [0: (cardHolderL - edgeGripLength)/ supportDistance]) {
+            edgeSupport([(i*supportDistance), 0+chamferDepth+supportDiameter/8, -cardHolderH/2-wallThickness/8+2*supportOffset]);
         }
 	}
 	
@@ -200,33 +209,33 @@ module cardEdgeGrips ()
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - edgeGripLength, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
+			rcard ( w=cardHolderL - edgeGripLength, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
 			translate ( [(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
-			translate ( [cardHolderW-edgeGripLength-(wallThickness - chamferDepth)/2, wallThickness, 0] )
+			translate ( [cardHolderL-edgeGripLength-(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
         
-        for(i = [0: (cardHolderW - edgeGripLength)/ 10]) {
-            edgeSupport([(i*10), 2*wallThickness-chamferDepth-supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
+        for(i = [0: (cardHolderL - edgeGripLength)/ supportDistance]) {
+            edgeSupport([(i*supportDistance), 2*wallThickness-chamferDepth-supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
         }
 	}
     // top right
-	translate ( [ edgeGripLength/2, cardHolderL-(2*wallThickness), 0] )
+	translate ( [ edgeGripLength/2, cardHolderW-(2*wallThickness), 0] )
 	{
 		union ()
 		{
-			rcard ( w=cardHolderW - edgeGripLength, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
+			rcard ( w=cardHolderL - edgeGripLength, l=2*wallThickness,  h=wallThickness, chamfer=chamferDepth );
 			// Round the ends
 			translate ( [(wallThickness-chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth);
-			translate ( [cardHolderW-edgeGripLength-(wallThickness - chamferDepth)/2, wallThickness, 0] )
+			translate ( [cardHolderL-edgeGripLength-(wallThickness - chamferDepth)/2, wallThickness, 0] )
 				rcylinder ( r=wallThickness, h=wallThickness, chamfer=chamferDepth );
 		}
         
-        for(i = [0: (cardHolderW - edgeGripLength)/ 10]) {
-        edgeSupport([(i*10), 0+chamferDepth+supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
+        for(i = [0: (cardHolderL - edgeGripLength)/ supportDistance]) {
+        edgeSupport([(i*supportDistance), 0+chamferDepth+supportDiameter/8, cardHolderH/2-wallThickness/8-2*supportOffset]);
         }
 	}
 
@@ -235,9 +244,9 @@ module cardEdgeGrips ()
 module cardSkid (x, y, z)
 {
     translate ( [x, y, z] )
-		    // card ( cardHolderW - 44, skidWidth, skidDepth );
+		    // card ( skidL, skidWidth, skidDepth );
         rotate ( [0, 90, 0] )
-            rcylinder ( r=skidWidth/2, h=cardHolderW - 44, chamfer=chamferDepth );
+            rcylinder ( r=skidWidth/2, h=skidL, chamfer=chamferDepth );
 }
 
 module cardHolder ()
@@ -245,48 +254,49 @@ module cardHolder ()
 	union() {
 	difference ()
 	{
-		rcard (cardHolderW, cardHolderL, 2*cardHolderH+wallThickness, chamferDepth );
+		rcard (cardHolderL, cardHolderW, 2*cardHolderH+wallThickness, chamferDepth );
 			
         // left side slot
 		translate ( [10, 8, cardHolderH-wallThickness] )
-			card ( cardHolderW - edgeGripLength, 2*wallThickness, 4*wallThickness );
+			card ( cardHolderL - edgeGripLength, 2*wallThickness, 4*wallThickness );
 
         // right side slot
-		translate ( [10, cardHolderL - 2*wallThickness - 8, cardHolderH-wallThickness] )
-			card ( cardHolderW - edgeGripLength, 2*wallThickness, 4*wallThickness );
+		translate ( [10, cardHolderW - 2*wallThickness - 8, cardHolderH-wallThickness] )
+			card ( cardHolderL - edgeGripLength, 2*wallThickness, 4*wallThickness );
 
         // bottom side cut out for card space
 		translate ([wallThickness,wallThickness,wallThickness+cardHolderH])
-			card (w=cardHolderW-2*wallThickness, l=cardHolderL-2*wallThickness, h=cardHolderH+wallThickness);
+			card (w=cardHolderL-2*wallThickness, l=cardHolderW-2*wallThickness, h=cardHolderH+wallThickness);
 
         // top side cut out for card space
 		translate ([wallThickness,wallThickness,-wallThickness])
-		card (w=cardHolderW-2*wallThickness, l=cardHolderL-2*wallThickness, h=cardHolderH+wallThickness);
+		card (w=cardHolderL-2*wallThickness, l=cardHolderW-2*wallThickness, h=cardHolderH+wallThickness);
 		
         // grip arch at the bottom
-		translate ([wallThickness/2, cardHolderL/2, 0])
+		translate ([wallThickness/2, cardHolderW/2, 0])
 			cylinder (  h=6*cardHolderH, r = cardGripArch, center=true);
 
 	}
 
-	wallDist = 15;
+    
+	skidDist = 15;
 	count = 4;
-	stop = cardHolderL - skidWidth - 2*wallDist;
+	stop = cardHolderW - skidWidth - 2*skidDist;
 	increment = stop/(count - 1);
 
-	for(i = [0: count-1]) let(y = wallDist + (i * increment)) {
+	for(i = [0: count-1]) let(y = skidDist + skidWidth/2 + (i * increment)) {
 		// bottom side skids
-        cardSkid(12, y, cardHolderH+wallThickness);
+        cardSkid(cardHolderL/2 - skidL/2 + skidVerticalOffset, y, cardHolderH+wallThickness);
         // top side skids
-        cardSkid(12, y, cardHolderH-(skidDepth / 2) + cardThicknessTolerance*2);
+        cardSkid(cardHolderL/2 - skidL/2 + skidVerticalOffset, y, cardHolderH-(skidDepth / 2) + cardThicknessTolerance*2);
 	}
 
 	// Top overhang
 	cardEdgeGrips();
 	// strap
 	cardStrap(
-	    chw=cardHolderW, 
-	    chl=cardHolderL,
+	    chl=cardHolderL, 
+	    chw=cardHolderW,
 	    chh=cardHolderH,
 	    wt=wallThickness,
 	    sh=strapHeight,
@@ -300,10 +310,11 @@ module cardHolder ()
 }
 
 if (oneHalf)
-    difference() {
-        cardHolder();
-        translate ([-wallThickness, -wallThickness, (cardHolderH)+(wallThickness/2)])
-            card(cardHolderW*2, cardHolderL*2, cardHolderH*2);
+    rotate([180, 0, 0])
+        difference() {
+            cardHolder();
+            translate ([-wallThickness, -wallThickness, (cardHolderH)+(wallThickness/2)])
+                card(cardHolderL*2, cardHolderW*2, cardHolderH*2);
     }
 else
     cardHolder();
