@@ -319,3 +319,15 @@ if (oneHalf)
     }
 else
     cardHolder();
+
+
+cuboid([2,20,7.5]){
+  position(TOP+RIGHT) orient(anchor=RIGHT)
+    knuckle_hinge(length=17.5, segs=9, offset=3, arm_height=0.3,
+          seg_ratio=1/3);
+  attach(TOP,TOP) color("green")
+    cuboid([2,20,7.5],anchor=TOP)
+      position(TOP+LEFT) orient(anchor=LEFT)
+        knuckle_hinge(length=17.5, segs=9, offset=3, arm_height=0.3,
+              seg_ratio=1/3, inner=true);
+ }
