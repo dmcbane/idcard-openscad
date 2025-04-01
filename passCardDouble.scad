@@ -1,7 +1,27 @@
+// Copyright 2025 H. Dale McBane
+// 
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the “Software”), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge,
+// publish, distribute, sublicense, and/or sell copies of the Software,
+// and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 // cd into the User Library Path
 // git clone https://github.com/BelfrySCAD/BOSL2.git
 include <BOSL2/std.scad>
-include <BOSL2/hinges.scad>
 
 // steps in curves
 $fn = 256;
@@ -19,22 +39,10 @@ cardThicknessTolerance = 0.11;
 chamferDepth = 0.5;
 // wall thickness mm
 wallThickness = 2.5;
-
 // Select Strap Text
 strapText = "";
-//strapText = "NIWC LANT 54200";
-//strapText = "NIWC LANT 54210";
-//strapText = "NIWC LANT 54220";
-//strapText = "NIWC LANT 54230";
-//strapText = "NIWC LANT 54250";
-//strapText = "NIWC LANT 54260";
-//strapText = "NIWC LANT 54270";
-//strapText = "NIWC LANT 59150";
-//strapText = "NIWC LANT 89500";
-//strapText = "U.S. ARMY";
-//strapText = "DOI  USGS";
 // Select Strap Text Font
-fontName = "DejaVu Sans:style=Condensed";
+fontName = "Highway Gothic:style=Regular";
 // text height mm
 textHeight = 4.7;
 // text depth mm

@@ -54,6 +54,33 @@
             "textHeight": "4.7000000000000002",
             "textVerticalPosition": "1.5",
             "wallThickness": "2.5"
+        },
+        "New set 3": {
+            "$fn": "256",
+            "cardGripArch": "9",
+            "cardHeight": "2.25",
+            "cardLength": "85",
+            "cardPerimeterTolerance": "0.75",
+            "cardThicknessTolerance": "0.11",
+            "cardWidth": "54",
+            "chamferDepth": "0.5",
+            "edgeGripLength": "50",
+            "fontName": "Highway Gothic:style=Regular",
+            "generateSupports": "true",
+            "oneHalf": "true",
+            "skidDepth": "0.5",
+            "skidLength": "44.100000000000001",
+            "skidVerticalOffset": "-11.5",
+            "skidWidth": "1.1000000000000001",
+            "strapHeight": "18.100000000000001",
+            "strapText": "",
+            "supportDiameter": "1.1000000000000001",
+            "supportDistance": "9.5",
+            "supportOffset": "0",
+            "textDepth": "0.5",
+            "textHeight": "4.7000000000000002",
+            "textVerticalPosition": "1.5",
+            "wallThickness": "2.5"
         }
     }
 }
